@@ -1,0 +1,1961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GreenChem-AI Intelligence Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0f0d;
+    --bg2: #0f1a14;
+    --bg3: #142018;
+    --card: #111a14;
+    --card2: #162019;
+    --border: #1e3028;
+    --border2: #2a4035;
+    --green: #00e676;
+    --green2: #69f0ae;
+    --green3: #1b5e20;
+    --teal: #00bcd4;
+    --teal2: #80deea;
+    --amber: #ffab40;
+    --red: #ff5252;
+    --text: #e8f5e9;
+    --text2: #a5c9af;
+    --text3: #6b9475;
+    --glow: 0 0 40px rgba(0,230,118,0.12);
+    --glow2: 0 0 20px rgba(0,230,118,0.08);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── ANIMATED BG ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 20% 20%, rgba(0,230,118,0.04) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 60% at 80% 80%, rgba(0,188,212,0.04) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 40% at 50% 50%, rgba(26,94,50,0.05) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* Grid overlay */
+  body::after {
+    content: '';
+    position: fixed; inset: 0; z-index: 0;
+    background-image:
+      linear-gradient(rgba(0,230,118,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,230,118,0.025) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    position: fixed; left: 0; top: 0; bottom: 0; width: 220px;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    z-index: 100;
+    display: flex; flex-direction: column;
+    padding: 0;
+  }
+
+  .logo {
+    padding: 24px 20px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo-mark {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 4px;
+  }
+
+  .logo-icon {
+    width: 34px; height: 34px;
+    background: linear-gradient(135deg, var(--green), var(--teal));
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    box-shadow: 0 0 20px rgba(0,230,118,0.3);
+    flex-shrink: 0;
+  }
+
+  .logo-text {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 15px;
+    color: var(--text);
+    line-height: 1.1;
+  }
+
+  .logo-sub {
+    font-size: 9px;
+    color: var(--text3);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.08em;
+    margin-top: 2px;
+  }
+
+  .nav {
+    padding: 16px 12px;
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  .nav-section-label {
+    font-size: 9px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text3);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0 8px;
+    margin-bottom: 6px;
+    margin-top: 16px;
+  }
+
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 13px;
+    color: var(--text2);
+    font-weight: 400;
+    margin-bottom: 2px;
+    border: 1px solid transparent;
+  }
+
+  .nav-item:hover {
+    background: var(--bg3);
+    color: var(--text);
+    border-color: var(--border);
+  }
+
+  .nav-item.active {
+    background: rgba(0,230,118,0.08);
+    color: var(--green);
+    border-color: rgba(0,230,118,0.2);
+  }
+
+  .nav-item .nav-icon { font-size: 15px; width: 20px; text-align: center; flex-shrink: 0; }
+
+  .nav-badge {
+    margin-left: auto;
+    background: var(--green3);
+    color: var(--green2);
+    font-size: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    padding: 1px 6px;
+    border-radius: 10px;
+  }
+
+  .sidebar-footer {
+    padding: 14px 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  .user-chip {
+    display: flex; align-items: center; gap: 10px;
+  }
+
+  .user-avatar {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: linear-gradient(135deg, #1b5e20, #00695c);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; color: var(--green2);
+    flex-shrink: 0;
+  }
+
+  .user-info { flex: 1; }
+  .user-name { font-size: 12px; font-weight: 500; color: var(--text); }
+  .user-role { font-size: 10px; color: var(--text3); }
+
+  /* ── MAIN ── */
+  .main {
+    margin-left: 220px;
+    position: relative; z-index: 1;
+    min-height: 100vh;
+  }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 28px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(10,15,13,0.8);
+    backdrop-filter: blur(10px);
+    position: sticky; top: 0; z-index: 50;
+  }
+
+  .topbar-left { display: flex; align-items: center; gap: 12px; }
+
+  .page-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--text);
+  }
+
+  .page-crumb {
+    font-size: 11px;
+    color: var(--text3);
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+
+  .topbar-right { display: flex; align-items: center; gap: 10px; }
+
+  .btn {
+    display: flex; align-items: center; gap: 7px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+    border: none;
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--text2);
+    border: 1px solid var(--border);
+  }
+  .btn-ghost:hover { background: var(--bg3); color: var(--text); border-color: var(--border2); }
+
+  .btn-primary {
+    background: var(--green);
+    color: #0a0f0d;
+    font-weight: 700;
+    box-shadow: 0 0 20px rgba(0,230,118,0.25);
+  }
+  .btn-primary:hover {
+    background: var(--green2);
+    box-shadow: 0 0 30px rgba(0,230,118,0.4);
+    transform: translateY(-1px);
+  }
+
+  .status-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 8px var(--green);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* ── CONTENT ── */
+  .content {
+    padding: 24px 28px;
+  }
+
+  .screen { display: none; animation: fadeIn 0.3s ease; }
+  .screen.active { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    transition: border-color 0.2s;
+  }
+  .card:hover { border-color: var(--border2); }
+
+  .card-label {
+    font-size: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text3);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .card-value {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 32px;
+    color: var(--text);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .card-sub {
+    font-size: 12px;
+    color: var(--text3);
+    display: flex; align-items: center; gap: 5px;
+  }
+
+  .delta-up { color: var(--green); }
+  .delta-down { color: var(--red); }
+
+  /* ── GRID LAYOUTS ── */
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 20px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
+  .grid-1-2 { display: grid; grid-template-columns: 1fr 2fr; gap: 14px; margin-bottom: 20px; }
+  .grid-2-1 { display: grid; grid-template-columns: 2fr 1fr; gap: 14px; margin-bottom: 20px; }
+
+  /* ── HEATMAP ── */
+  .heatmap-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    margin-top: 12px;
+  }
+
+  .heatmap-cell {
+    aspect-ratio: 1;
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px;
+    font-family: 'JetBrains Mono', monospace;
+    color: rgba(255,255,255,0.6);
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    position: relative;
+  }
+
+  .heatmap-cell:hover {
+    transform: scale(1.15);
+    z-index: 10;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  }
+
+  .hm-green { background: rgba(0,230,118,0.7); }
+  .hm-lime { background: rgba(156,204,101,0.7); }
+  .hm-yellow { background: rgba(255,235,59,0.65); color: rgba(0,0,0,0.6); }
+  .hm-amber { background: rgba(255,171,64,0.7); color: rgba(0,0,0,0.5); }
+  .hm-orange { background: rgba(255,112,67,0.7); }
+  .hm-red { background: rgba(255,82,82,0.75); }
+  .hm-empty { background: var(--bg3); }
+
+  /* ── PROGRESS BARS ── */
+  .prog-bar {
+    height: 6px;
+    background: var(--bg3);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 8px;
+  }
+  .prog-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* ── CHART BARS ── */
+  .bar-chart {
+    display: flex; align-items: flex-end; gap: 8px;
+    height: 120px; padding-top: 10px;
+  }
+  .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .bar {
+    width: 100%;
+    border-radius: 4px 4px 0 0;
+    transition: height 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+  }
+  .bar:hover::after {
+    content: attr(data-val);
+    position: absolute; top: -24px; left: 50%; transform: translateX(-50%);
+    background: var(--card2);
+    color: var(--text);
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    white-space: nowrap;
+    border: 1px solid var(--border2);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .bar-label { font-size: 9px; color: var(--text3); font-family: 'JetBrains Mono', monospace; }
+
+  /* ── PROCESS OPTIMIZER ── */
+  .search-box {
+    background: var(--card2);
+    border: 1px solid var(--border2);
+    border-radius: 12px;
+    padding: 16px 20px;
+    display: flex; gap: 12px; align-items: center;
+    margin-bottom: 20px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .search-box:focus-within {
+    border-color: var(--green);
+    box-shadow: 0 0 0 3px rgba(0,230,118,0.08), var(--glow);
+  }
+
+  .search-input {
+    flex: 1;
+    background: none;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-size: 15px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .search-input::placeholder { color: var(--text3); font-style: italic; }
+
+  .comparison-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .route-card {
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid;
+  }
+
+  .route-card.standard {
+    background: rgba(255,82,82,0.04);
+    border-color: rgba(255,82,82,0.2);
+  }
+
+  .route-card.green {
+    background: rgba(0,230,118,0.04);
+    border-color: rgba(0,230,118,0.2);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .route-card.green::before {
+    content: 'AI RECOMMENDED';
+    position: absolute; top: 12px; right: -28px;
+    background: var(--green);
+    color: #0a0f0d;
+    font-size: 8px;
+    font-weight: 800;
+    font-family: 'Syne', sans-serif;
+    padding: 3px 40px;
+    transform: rotate(45deg);
+    letter-spacing: 0.05em;
+  }
+
+  .route-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 14px;
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .route-metric {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+  }
+  .route-metric:last-child { border-bottom: none; }
+  .route-metric-label { color: var(--text3); }
+  .route-metric-val { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 500; }
+
+  /* Score ring */
+  .score-ring-wrap {
+    display: flex; flex-direction: column; align-items: center;
+    padding: 16px 0;
+  }
+  .score-ring {
+    width: 90px; height: 90px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    margin-bottom: 8px;
+  }
+  .score-ring-inner {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 26px;
+    line-height: 1;
+    text-align: center;
+  }
+  .score-ring-label { font-size: 9px; color: var(--text3); font-family: 'JetBrains Mono', monospace; letter-spacing: 0.05em; }
+
+  /* ── STEPS ── */
+  .steps {
+    display: flex; flex-direction: column; gap: 0;
+    position: relative;
+    margin-top: 8px;
+  }
+  .steps::before {
+    content: '';
+    position: absolute; left: 16px; top: 0; bottom: 0; width: 1px;
+    background: var(--border2);
+  }
+  .step {
+    display: flex; gap: 14px; padding: 10px 0;
+    position: relative; z-index: 1;
+  }
+  .step-dot {
+    width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700;
+    font-family: 'Syne', sans-serif;
+  }
+  .step-dot.green { background: rgba(0,230,118,0.15); color: var(--green); border: 1px solid rgba(0,230,118,0.3); }
+  .step-dot.red { background: rgba(255,82,82,0.12); color: var(--red); border: 1px solid rgba(255,82,82,0.25); }
+  .step-content {}
+  .step-title { font-size: 12px; font-weight: 500; color: var(--text); margin-bottom: 2px; }
+  .step-detail { font-size: 11px; color: var(--text3); }
+
+  /* ── COMPLIANCE TRACKER ── */
+  .compliance-item {
+    display: flex; align-items: flex-start; gap: 14px;
+    padding: 14px 16px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 8px;
+    transition: all 0.2s;
+  }
+  .compliance-item:hover { border-color: var(--border2); }
+
+  .compliance-icon {
+    width: 36px; height: 36px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0;
+  }
+  .ci-pass { background: rgba(0,230,118,0.1); }
+  .ci-warn { background: rgba(255,171,64,0.1); }
+  .ci-fail { background: rgba(255,82,82,0.1); }
+
+  .compliance-body { flex: 1; }
+  .compliance-title { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 2px; }
+  .compliance-desc { font-size: 11px; color: var(--text3); line-height: 1.5; }
+
+  .compliance-status {
+    flex-shrink: 0;
+    font-size: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+    align-self: center;
+  }
+  .cs-pass { background: rgba(0,230,118,0.1); color: var(--green); border: 1px solid rgba(0,230,118,0.2); }
+  .cs-warn { background: rgba(255,171,64,0.1); color: var(--amber); border: 1px solid rgba(255,171,64,0.2); }
+  .cs-fail { background: rgba(255,82,82,0.1); color: var(--red); border: 1px solid rgba(255,82,82,0.2); }
+
+  /* ── SDG BADGES ── */
+  .sdg-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 12px; font-weight: 500;
+    margin-right: 8px; margin-bottom: 8px;
+  }
+  .sdg-9 { background: rgba(253,106,2,0.12); border: 1px solid rgba(253,106,2,0.25); color: #fd8c40; }
+  .sdg-12 { background: rgba(191,129,45,0.12); border: 1px solid rgba(191,129,45,0.25); color: #d4a843; }
+  .sdg-13 { background: rgba(68,138,255,0.12); border: 1px solid rgba(68,138,255,0.25); color: #82b1ff; }
+  .sdg-3 { background: rgba(76,175,80,0.12); border: 1px solid rgba(76,175,80,0.25); color: #81c784; }
+
+  /* ── ALERTS ── */
+  .alert-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin-bottom: 6px;
+    font-size: 12px;
+  }
+  .alert-new { background: rgba(255,82,82,0.07); border: 1px solid rgba(255,82,82,0.15); }
+  .alert-info { background: rgba(0,188,212,0.07); border: 1px solid rgba(0,188,212,0.15); }
+  .alert-done { background: rgba(0,230,118,0.05); border: 1px solid rgba(0,230,118,0.1); }
+
+  /* ── SECTION HEADER ── */
+  .section-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-title::before {
+    content: '';
+    display: block;
+    width: 3px; height: 16px;
+    background: var(--green);
+    border-radius: 2px;
+    box-shadow: 0 0 8px var(--green);
+  }
+
+  /* ── TABS ── */
+  .tabs {
+    display: flex; gap: 4px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 4px;
+    margin-bottom: 18px;
+  }
+  .tab {
+    flex: 1;
+    padding: 8px;
+    border-radius: 7px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text3);
+    transition: all 0.2s;
+    border: none;
+    background: none;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .tab.active {
+    background: var(--card2);
+    color: var(--green);
+    border: 1px solid var(--border2);
+  }
+
+  /* ── CHIP ── */
+  .chip {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .chip-green { background: rgba(0,230,118,0.1); color: var(--green); border: 1px solid rgba(0,230,118,0.2); }
+  .chip-teal { background: rgba(0,188,212,0.1); color: var(--teal); border: 1px solid rgba(0,188,212,0.2); }
+  .chip-amber { background: rgba(255,171,64,0.1); color: var(--amber); border: 1px solid rgba(255,171,64,0.2); }
+  .chip-red { background: rgba(255,82,82,0.1); color: var(--red); border: 1px solid rgba(255,82,82,0.2); }
+
+  /* ── DIVIDER ── */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 18px 0;
+  }
+
+  /* ── LOADING ANIMATION ── */
+  .analyzing {
+    display: none;
+    align-items: center; gap: 10px;
+    padding: 12px 16px;
+    background: rgba(0,230,118,0.05);
+    border: 1px solid rgba(0,230,118,0.15);
+    border-radius: 8px;
+    margin-bottom: 16px;
+    font-size: 12px;
+    color: var(--green);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .analyzing.show { display: flex; }
+
+  .spin {
+    width: 14px; height: 14px; border-radius: 50%;
+    border: 2px solid rgba(0,230,118,0.3);
+    border-top-color: var(--green);
+    animation: spin 0.8s linear infinite;
+    flex-shrink: 0;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── DONUT CHART (CSS) ── */
+  .donut-wrap {
+    display: flex; align-items: center; gap: 20px;
+  }
+  .donut {
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    background: conic-gradient(
+      var(--green) 0deg 180deg,
+      var(--teal) 180deg 270deg,
+      var(--amber) 270deg 324deg,
+      var(--border) 324deg 360deg
+    );
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .donut-inner {
+    width: 64px; height: 64px; border-radius: 50%;
+    background: var(--card);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800; font-size: 18px;
+    color: var(--text);
+  }
+  .donut-legend { }
+  .legend-item {
+    display: flex; align-items: center; gap: 7px;
+    margin-bottom: 5px;
+    font-size: 11px; color: var(--text2);
+  }
+  .legend-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+
+  /* ── NOTIFICATION BELL ── */
+  .notif-btn {
+    width: 34px; height: 34px; border-radius: 8px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    position: relative;
+    font-size: 15px;
+    transition: all 0.2s;
+  }
+  .notif-btn:hover { border-color: var(--border2); }
+  .notif-dot {
+    position: absolute; top: 5px; right: 5px;
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--red);
+    border: 1px solid var(--bg);
+  }
+
+  /* ── MOLECULE VIZ (decorative) ── */
+  .molecule-bg {
+    position: absolute; right: 20px; bottom: 20px;
+    opacity: 0.04; pointer-events: none;
+    font-size: 120px; filter: blur(2px);
+  }
+
+  /* ── TOOLTIPS ── */
+  [data-tip] { position: relative; }
+  [data-tip]:hover::after {
+    content: attr(data-tip);
+    position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%);
+    background: var(--card2);
+    color: var(--text);
+    font-size: 10px;
+    padding: 4px 8px;
+    border-radius: 5px;
+    border: 1px solid var(--border2);
+    white-space: nowrap;
+    z-index: 100;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg2); }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+  /* ── REPORT EXPORT ── */
+  .export-card {
+    background: linear-gradient(135deg, rgba(0,230,118,0.06), rgba(0,188,212,0.04));
+    border: 1px solid rgba(0,230,118,0.18);
+    border-radius: 12px;
+    padding: 18px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 14px;
+  }
+
+  .export-title { font-family: 'Syne', sans-serif; font-weight: 600; font-size: 14px; margin-bottom: 2px; }
+  .export-sub { font-size: 11px; color: var(--text3); }
+
+  /* ── MODAL OVERLAY ── */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; z-index: 200;
+    background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
+    align-items: center; justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: 16px;
+    padding: 28px;
+    max-width: 480px; width: 90%;
+    animation: modalIn 0.2s ease;
+  }
+  @keyframes modalIn {
+    from { transform: scale(0.92); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  .modal-title {
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 18px; margin-bottom: 6px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .modal-sub { font-size: 13px; color: var(--text3); margin-bottom: 20px; line-height: 1.5; }
+
+  /* ── INTRO SPLASH ── */
+  .splash {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-height: calc(100vh - 57px);
+    text-align: center;
+    position: relative;
+  }
+
+  .splash-logo {
+    width: 72px; height: 72px;
+    background: linear-gradient(135deg, var(--green), var(--teal));
+    border-radius: 18px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 32px;
+    margin-bottom: 24px;
+    box-shadow: 0 0 60px rgba(0,230,118,0.25);
+    animation: floatY 3s ease-in-out infinite;
+  }
+
+  @keyframes floatY {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  .splash-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800; font-size: 40px;
+    background: linear-gradient(135deg, var(--text) 30%, var(--green));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    margin-bottom: 10px;
+  }
+
+  .splash-sub {
+    font-size: 15px;
+    color: var(--text3);
+    max-width: 440px;
+    line-height: 1.7;
+    margin-bottom: 32px;
+  }
+
+  .splash-cards {
+    display: flex; gap: 12px;
+    margin-bottom: 36px;
+    flex-wrap: wrap; justify-content: center;
+  }
+  .splash-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 18px;
+    min-width: 150px;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .splash-card:hover {
+    border-color: var(--green);
+    box-shadow: var(--glow2);
+    transform: translateY(-2px);
+  }
+  .splash-card-icon { font-size: 22px; margin-bottom: 6px; }
+  .splash-card-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 2px; font-family: 'Syne', sans-serif; }
+  .splash-card-sub { font-size: 10px; color: var(--text3); }
+
+  /* Circular progress */
+  .circ-prog {
+    position: relative; width: 70px; height: 70px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .circ-svg { position: absolute; inset: 0; transform: rotate(-90deg); }
+  .circ-track { fill: none; stroke: var(--border2); stroke-width: 5; }
+  .circ-fill { fill: none; stroke-width: 5; stroke-linecap: round; transition: stroke-dashoffset 1.2s cubic-bezier(0.4,0,0.2,1); }
+  .circ-val { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; color: var(--text); }
+
+</style>
+</head>
+<body>
+
+<!-- ─────────────────────── SIDEBAR ─────────────────────── -->
+<nav class="sidebar">
+  <div class="logo">
+    <div class="logo-mark">
+      <div class="logo-icon">🌿</div>
+      <div class="logo-text">GreenChem<br>AI Hub</div>
+    </div>
+    <div class="logo-sub">v2.4.1 · ESG INTELLIGENCE PLATFORM</div>
+  </div>
+
+  <div class="nav">
+    <div class="nav-section-label">Overview</div>
+    <div class="nav-item active" onclick="navigate('dashboard')">
+      <span class="nav-icon">📊</span> Sustainability Dashboard
+    </div>
+    <div class="nav-item" onclick="navigate('optimizer')">
+      <span class="nav-icon">⚗️</span> Process Optimizer
+      <span class="nav-badge">NEW</span>
+    </div>
+
+    <div class="nav-section-label">Compliance</div>
+    <div class="nav-item" onclick="navigate('compliance')">
+      <span class="nav-icon">✅</span> Regulatory Tracker
+    </div>
+    <div class="nav-item" onclick="navigate('reports')">
+      <span class="nav-icon">📄</span> ESG Reports
+    </div>
+
+    <div class="nav-section-label">Intelligence</div>
+    <div class="nav-item" onclick="navigate('alerts')">
+      <span class="nav-icon">🔔</span> Chemical Alerts
+      <span class="nav-badge" style="background:rgba(255,82,82,0.15);color:#ff5252;">3</span>
+    </div>
+    <div class="nav-item" onclick="navigate('sdg')">
+      <span class="nav-icon">🌍</span> SDG Alignment
+    </div>
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="user-chip">
+      <div class="user-avatar">RS</div>
+      <div class="user-info">
+        <div class="user-name">Dr. Rahul S.</div>
+        <div class="user-role">Sustainability Lead · Tier 1</div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ─────────────────────── MAIN ─────────────────────── -->
+<div class="main">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="page-title" id="pageTitle">Sustainability Dashboard</div>
+      <div class="page-crumb" id="pageCrumb">Q1 2025 · Live</div>
+    </div>
+    <div class="topbar-right">
+      <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text3);margin-right:4px;">
+        <div class="status-dot"></div> Real-time sync
+      </div>
+      <div class="notif-btn" onclick="navigate('alerts')">🔔<div class="notif-dot"></div></div>
+      <button class="btn btn-ghost" onclick="openModal()">📤 Export</button>
+      <button class="btn btn-primary" onclick="navigate('optimizer')">⚡ Analyze Route</button>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- ══════════ SCREEN 1: DASHBOARD ══════════ -->
+    <div class="screen active" id="screen-dashboard">
+
+      <!-- KPI ROW -->
+      <div class="grid-4">
+        <div class="card">
+          <div class="card-label">Portfolio E-Factor</div>
+          <div class="card-value" style="color:var(--amber)">34.2</div>
+          <div class="card-sub"><span class="delta-down">↓ 8.4</span> vs last quarter</div>
+          <div class="prog-bar"><div class="prog-fill" style="width:34%;background:linear-gradient(90deg,var(--amber),var(--green))"></div></div>
+        </div>
+        <div class="card">
+          <div class="card-label">CO₂e Avoided (kg)</div>
+          <div class="card-value" style="color:var(--green)">12,847</div>
+          <div class="card-sub"><span class="delta-up">↑ 23%</span> AI-optimised routes</div>
+          <div class="prog-bar"><div class="prog-fill" style="width:72%;background:var(--green)"></div></div>
+        </div>
+        <div class="card">
+          <div class="card-label">Green Routes Active</div>
+          <div class="card-value" style="color:var(--teal)">18 <span style="font-size:16px;color:var(--text3)">/ 24</span></div>
+          <div class="card-sub"><span class="delta-up">+5</span> this month</div>
+          <div class="prog-bar"><div class="prog-fill" style="width:75%;background:var(--teal)"></div></div>
+        </div>
+        <div class="card">
+          <div class="card-label">Solvent Waste Saved</div>
+          <div class="card-value" style="color:var(--green2)">38%</div>
+          <div class="card-sub">vs conventional routes</div>
+          <div class="prog-bar"><div class="prog-fill" style="width:38%;background:var(--green2)"></div></div>
+        </div>
+      </div>
+
+      <div class="grid-2-1">
+
+        <!-- HEATMAP -->
+        <div class="card" style="position:relative;overflow:hidden;">
+          <div class="section-header">
+            <div class="section-title">E-Factor Heat Map — Active Projects</div>
+            <span class="chip chip-teal">Live</span>
+          </div>
+
+          <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start;">
+            <div>
+              <div style="font-size:10px;color:var(--text3);font-family:'JetBrains Mono',monospace;margin-bottom:8px;">PROJECT CODES →</div>
+              <div class="heatmap-grid" style="grid-template-columns:repeat(8,1fr);gap:6px;">
+                <div class="heatmap-cell hm-green" data-tip="API-01: E-factor 3.2 ✓">A1</div>
+                <div class="heatmap-cell hm-green" data-tip="API-02: E-factor 4.1 ✓">A2</div>
+                <div class="heatmap-cell hm-lime" data-tip="API-03: E-factor 8.7">A3</div>
+                <div class="heatmap-cell hm-yellow" data-tip="API-04: E-factor 12.3">A4</div>
+                <div class="heatmap-cell hm-amber" data-tip="API-05: E-factor 19.8 ⚠">A5</div>
+                <div class="heatmap-cell hm-red" data-tip="API-06: E-factor 38.4 ✗">A6</div>
+                <div class="heatmap-cell hm-amber" data-tip="API-07: E-factor 22.1 ⚠">A7</div>
+                <div class="heatmap-cell hm-green" data-tip="API-08: E-factor 5.0 ✓">A8</div>
+                <div class="heatmap-cell hm-lime" data-tip="FIN-01: E-factor 9.2">F1</div>
+                <div class="heatmap-cell hm-green" data-tip="FIN-02: E-factor 6.1 ✓">F2</div>
+                <div class="heatmap-cell hm-red" data-tip="FIN-03: E-factor 44.9 ✗">F3</div>
+                <div class="heatmap-cell hm-orange" data-tip="FIN-04: E-factor 29.0">F4</div>
+                <div class="heatmap-cell hm-green" data-tip="FIN-05: E-factor 3.8 ✓">F5</div>
+                <div class="heatmap-cell hm-lime" data-tip="FIN-06: E-factor 10.4">F6</div>
+                <div class="heatmap-cell hm-amber" data-tip="SYN-01: E-factor 17.7 ⚠">S1</div>
+                <div class="heatmap-cell hm-green" data-tip="SYN-02: E-factor 4.4 ✓">S2</div>
+                <div class="heatmap-cell hm-lime" data-tip="SYN-03: E-factor 7.9">S3</div>
+                <div class="heatmap-cell hm-yellow" data-tip="SYN-04: E-factor 14.5">S4</div>
+                <div class="heatmap-cell hm-orange" data-tip="SYN-05: E-factor 26.3">S5</div>
+                <div class="heatmap-cell hm-amber" data-tip="SYN-06: E-factor 20.5 ⚠">S6</div>
+                <div class="heatmap-cell hm-empty">—</div>
+                <div class="heatmap-cell hm-empty">—</div>
+                <div class="heatmap-cell hm-empty">—</div>
+                <div class="heatmap-cell hm-empty">—</div>
+              </div>
+              <div style="display:flex;gap:10px;margin-top:10px;flex-wrap:wrap;">
+                <div style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text3)"><div style="width:10px;height:10px;border-radius:2px;background:rgba(0,230,118,0.7)"></div> ≤5 (Excellent)</div>
+                <div style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text3)"><div style="width:10px;height:10px;border-radius:2px;background:rgba(156,204,101,0.7)"></div> 5–10</div>
+                <div style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text3)"><div style="width:10px;height:10px;border-radius:2px;background:rgba(255,235,59,0.65)"></div> 10–15</div>
+                <div style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text3)"><div style="width:10px;height:10px;border-radius:2px;background:rgba(255,171,64,0.7)"></div> 15–25</div>
+                <div style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text3)"><div style="width:10px;height:10px;border-radius:2px;background:rgba(255,82,82,0.75)"></div> >25 (Critical)</div>
+              </div>
+            </div>
+
+            <!-- Mini bar chart -->
+            <div style="flex:1;min-width:160px;">
+              <div style="font-size:10px;color:var(--text3);font-family:'JetBrains Mono',monospace;margin-bottom:8px;">E-FACTOR TREND (MONTHLY)</div>
+              <div class="bar-chart">
+                <div class="bar-col">
+                  <div class="bar" style="height:90%;background:rgba(255,82,82,0.5)" data-val="42.1"></div>
+                  <div class="bar-label">Aug</div>
+                </div>
+                <div class="bar-col">
+                  <div class="bar" style="height:82%;background:rgba(255,112,67,0.5)" data-val="38.7"></div>
+                  <div class="bar-label">Sep</div>
+                </div>
+                <div class="bar-col">
+                  <div class="bar" style="height:74%;background:rgba(255,171,64,0.5)" data-val="34.9"></div>
+                  <div class="bar-label">Oct</div>
+                </div>
+                <div class="bar-col">
+                  <div class="bar" style="height:68%;background:rgba(255,235,59,0.5)" data-val="32.1"></div>
+                  <div class="bar-label">Nov</div>
+                </div>
+                <div class="bar-col">
+                  <div class="bar" style="height:60%;background:rgba(156,204,101,0.5)" data-val="28.3"></div>
+                  <div class="bar-label">Dec</div>
+                </div>
+                <div class="bar-col">
+                  <div class="bar" style="height:52%;background:rgba(0,230,118,0.6)" data-val="24.1 ▼"></div>
+                  <div class="bar-label">Jan</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT COLUMN -->
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <!-- Carbon tracker -->
+          <div class="card">
+            <div class="card-label">Carbon Budget Tracker — 2025</div>
+            <div style="margin-top:12px;">
+              <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text2);margin-bottom:6px;">
+                <span>CO₂e Used</span><span style="color:var(--green);font-family:'JetBrains Mono',monospace">41%</span>
+              </div>
+              <div class="prog-bar" style="height:10px;border-radius:5px;">
+                <div class="prog-fill" style="width:41%;background:linear-gradient(90deg,var(--teal),var(--green));height:100%;border-radius:5px;"></div>
+              </div>
+              <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:10px;color:var(--text3);font-family:'JetBrains Mono',monospace;">
+                <span>0</span><span>31.2 tCO₂e used of 76.0 target</span><span>76t</span>
+              </div>
+            </div>
+            <div style="margin-top:14px;display:flex;gap:10px;">
+              <div style="flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center;">
+                <div style="font-size:18px;font-family:'Syne',sans-serif;font-weight:800;color:var(--green)">44.8t</div>
+                <div style="font-size:9px;color:var(--text3)">Remaining</div>
+              </div>
+              <div style="flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center;">
+                <div style="font-size:18px;font-family:'Syne',sans-serif;font-weight:800;color:var(--amber)">18.3t</div>
+                <div style="font-size:9px;color:var(--text3)">Projected Q2</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Waste breakdown donut -->
+          <div class="card">
+            <div class="card-label">Waste Category Breakdown</div>
+            <div class="donut-wrap" style="margin-top:12px;">
+              <div class="donut"><div class="donut-inner">24%</div></div>
+              <div class="donut-legend">
+                <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div> Solvent (50%)</div>
+                <div class="legend-item"><div class="legend-dot" style="background:var(--teal)"></div> Aqueous (25%)</div>
+                <div class="legend-item"><div class="legend-dot" style="background:var(--amber)"></div> Halogenated (15%)</div>
+                <div class="legend-item"><div class="legend-dot" style="background:var(--border)"></div> Other (10%)</div>
+              </div>
+            </div>
+            <div style="margin-top:10px;padding:8px 10px;background:rgba(0,230,118,0.05);border-radius:6px;border:1px solid rgba(0,230,118,0.12);font-size:11px;color:var(--green);">
+              🌿 AI-optimised routes have reduced halogenated waste by 61% YoY
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOTTOM ROW -->
+      <div class="grid-3">
+        <div class="card">
+          <div class="section-title" style="font-size:13px;margin-bottom:12px;">Top Projects by Sustainability Score</div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;align-items:center;gap:10px;font-size:12px;">
+              <span class="chip chip-green">92</span>
+              <span style="flex:1;color:var(--text2)">API-001: Atorvastatin synthesis</span>
+              <span style="color:var(--text3);font-size:10px;">AI Route</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;font-size:12px;">
+              <span class="chip chip-green">88</span>
+              <span style="flex:1;color:var(--text2)">SYN-004: Metformin via flow</span>
+              <span style="color:var(--text3);font-size:10px;">AI Route</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;font-size:12px;">
+              <span class="chip chip-teal" style="min-width:40px;justify-content:center;">76</span>
+              <span style="flex:1;color:var(--text2)">FIN-002: Losartan coupling</span>
+              <span style="color:var(--text3);font-size:10px;">Hybrid</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;font-size:12px;">
+              <span class="chip chip-amber" style="min-width:40px;justify-content:center;">61</span>
+              <span style="flex:1;color:var(--text2)">SYN-006: Ibuprofen synthesis</span>
+              <span style="color:var(--text3);font-size:10px;">Review</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;font-size:12px;">
+              <span class="chip chip-red" style="min-width:40px;justify-content:center;">34</span>
+              <span style="flex:1;color:var(--text2)">API-006: DCM-based extraction</span>
+              <span style="color:var(--text3);font-size:10px;">⚠ Optimise</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-title" style="font-size:13px;margin-bottom:12px;">Energy Intensity (GJ/kg API)</div>
+          <div class="bar-chart" style="height:110px;">
+            <div class="bar-col"><div class="bar" style="height:100%;background:rgba(255,82,82,0.45)" data-val="8.2 GJ/kg (Batch)"></div><div class="bar-label">Batch</div></div>
+            <div class="bar-col"><div class="bar" style="height:72%;background:rgba(255,171,64,0.45)" data-val="5.9 GJ/kg (Micro)"></div><div class="bar-label">Micro</div></div>
+            <div class="bar-col"><div class="bar" style="height:48%;background:rgba(0,188,212,0.5)" data-val="3.9 GJ/kg (Flow)"></div><div class="bar-label">Flow</div></div>
+            <div class="bar-col"><div class="bar" style="height:30%;background:rgba(0,230,118,0.6)" data-val="2.5 GJ/kg (AI+Flow)"></div><div class="bar-label">AI+Flow</div></div>
+          </div>
+          <div style="margin-top:8px;font-size:11px;color:var(--text3);text-align:center;">AI + Continuous Flow achieves <strong style="color:var(--green)">69% energy reduction</strong> vs batch</div>
+        </div>
+
+        <div class="card">
+          <div class="section-title" style="font-size:13px;margin-bottom:12px;">Regulatory Compliance Summary</div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 10px;background:var(--bg3);border-radius:7px;border:1px solid var(--border)">
+              <div style="font-size:12px;color:var(--text2)">EU REACH Compliance</div>
+              <span class="chip chip-green">✓ Pass</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 10px;background:var(--bg3);border-radius:7px;border:1px solid var(--border)">
+              <div style="font-size:12px;color:var(--text2)">EPA Green Chemistry</div>
+              <span class="chip chip-green">✓ Pass</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 10px;background:var(--bg3);border-radius:7px;border:1px solid var(--border)">
+              <div style="font-size:12px;color:var(--text2)">OECD Chemical Safety</div>
+              <span class="chip chip-amber">⚠ Review</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 10px;background:var(--bg3);border-radius:7px;border:1px solid var(--border)">
+              <div style="font-size:12px;color:var(--text2)">UN SDG 12 Target</div>
+              <span class="chip chip-green">✓ On Track</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 10px;background:var(--bg3);border-radius:7px;border:1px solid var(--border)">
+              <div style="font-size:12px;color:var(--text2)">ICH Q3C Solvents</div>
+              <span class="chip chip-red">✗ 2 Flags</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ══════════ SCREEN 2: PROCESS OPTIMIZER ══════════ -->
+    <div class="screen" id="screen-optimizer">
+
+      <div style="display:grid;grid-template-columns:1fr 320px;gap:20px;">
+        <div>
+          <div class="search-box">
+            <span style="font-size:18px;">⚗️</span>
+            <input class="search-input" id="chemInput" placeholder="Enter SMILES notation, reaction type or chemical name (e.g. Ibuprofen, Amide coupling, DCM...)" onkeypress="if(event.key==='Enter')runAnalysis()">
+            <button class="btn btn-primary" onclick="runAnalysis()">🔬 Analyze</button>
+          </div>
+
+          <div class="analyzing" id="analyzing">
+            <div class="spin"></div>
+            <span id="analyzingText">Initialising AI Substitution Engine...</span>
+          </div>
+
+          <div id="resultsArea">
+
+            <div style="margin-bottom:14px;">
+              <div class="tabs">
+                <button class="tab active" onclick="switchTab(this,'route-tab')">Route Comparison</button>
+                <button class="tab" onclick="switchTab(this,'steps-tab')">Synthesis Steps</button>
+                <button class="tab" onclick="switchTab(this,'solvents-tab')">Solvent Analysis</button>
+              </div>
+            </div>
+
+            <div id="route-tab">
+              <div class="comparison-grid">
+                <!-- STANDARD ROUTE -->
+                <div class="route-card standard">
+                  <div class="route-title" style="color:var(--red);">⚗ Standard Route
+                    <span class="chip chip-red">High Impact</span>
+                  </div>
+
+                  <div class="score-ring-wrap">
+                    <div class="score-ring" style="background: conic-gradient(var(--red) 0deg 122deg, var(--border2) 122deg 360deg);">
+                      <div class="score-ring-inner" style="color:var(--red)">34</div>
+                    </div>
+                    <div class="score-ring-label">SUSTAINABILITY SCORE</div>
+                  </div>
+
+                  <div class="route-metric">
+                    <span class="route-metric-label">E-Factor</span>
+                    <span class="route-metric-val" style="color:var(--red)">38.4 kg/kg</span>
+                  </div>
+                  <div class="route-metric">
+                    <span class="route-metric-label">CO₂ equivalent</span>
+                    <span class="route-metric-val" style="color:var(--amber)">142 kg CO₂e</span>
+                  </div>
+                  <div class="route-metric">
+                    <span class="route-metric-label">Water footprint</span>
+                    <span class="route-metric-val" style="color:var(--amber)">2,840 L/kg</span>
+                  </div>
+                  <div class="route-metric">
+                    <span class="route-metric-label">Primary solvent</span>
+                    <span class="route-metric-val" style="color:var(--red)">DCM (Class 2)</span>
+                  </div>
+                  <div class="route-metric">
+                    <span class="route-metric-label">REACH status</span>
+                    <span class="route-metric-val" style="color:var(--red)">⚠ Restricted</span>
+                  </div>
+                  <div class="route-metric">
+                    <span class="route-metric-label">Reaction steps</span>
+                    <span class="route-metric-val">7 steps</span>
+                  </div>
+                  <div class="route-metric">
+                    <span class="route-metric-label">Est. yield</span>
+                    <span class="route-metric-val">68%</span>
+                  </div>
+                </div>
+
+                <!-- GREEN ROUTE -->
+                <div class="route-card green">
+                  <div class="route-title" style="color:var(--green);">🌿 AI Green Route
+                    <span class="chip chip-green">Optimised</span>
+                  </div>
+
+                  <div class="score-ring-wrap">
+                    <div class="score-ring" style="background: conic-gradient(var(--green) 0deg 295deg, var(--border2) 295deg 360deg);">
+                      <div class="score-ring-inner" style="color:var(--green)">82</div>
+                    </div>
+                    <div class="score-ring-label">SUSTAINABILITY SCORE</div>
+                  </div>
+
+                  <div class="route-metric">
+                    <span class="route-metric-label">E-Factor</span>
+                    <span class="route-metric-val" style="color:var(--green)">4.1 kg/kg</span>
+                  </div>
+                  <div class="route-metric">
+                    <span class="route-metric-label">CO₂ equivalent</span>
+                    <span class="route-metric-val" style="color:var(--green)">31 kg CO₂e</span>
+                  </div>
+                  <div class="route-metric">
+                    <span class="route-metric-label">Water footprint</span>
+                    <span class="route-metric-val" style="color:var(--green)">820 L/kg</span>
+                  </div>
+                  <div class="route-metric">
+                    <span class="route-metric-label">Primary solvent</span>
+                    <span class="route-metric-val" style="color:var(--green)">EtOAc (Class 3)</span>
+                  </div>
+                  <div class="route-metric">
+                    <span class="route-metric-label">REACH status</span>
+                    <span class="route-metric-val" style="color:var(--green)">✓ Compliant</span>
+                  </div>
+                  <div class="route-metric">
+                    <span class="route-metric-label">Reaction steps</span>
+                    <span class="route-metric-val">4 steps</span>
+                  </div>
+                  <div class="route-metric">
+                    <span class="route-metric-label">Est. yield</span>
+                    <span class="route-metric-val" style="color:var(--green)">79%</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- SAVINGS BANNER -->
+              <div style="background:linear-gradient(135deg,rgba(0,230,118,0.07),rgba(0,188,212,0.04));border:1px solid rgba(0,230,118,0.18);border-radius:10px;padding:16px 20px;display:flex;gap:24px;flex-wrap:wrap;">
+                <div style="text-align:center;">
+                  <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:26px;color:var(--green)">▼ 89%</div>
+                  <div style="font-size:11px;color:var(--text3)">E-Factor reduction</div>
+                </div>
+                <div style="text-align:center;">
+                  <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:26px;color:var(--teal)">▼ 78%</div>
+                  <div style="font-size:11px;color:var(--text3)">CO₂e reduction</div>
+                </div>
+                <div style="text-align:center;">
+                  <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:26px;color:var(--green2)">▼ 71%</div>
+                  <div style="font-size:11px;color:var(--text3)">Water saved</div>
+                </div>
+                <div style="text-align:center;">
+                  <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:26px;color:var(--amber)">+16%</div>
+                  <div style="font-size:11px;color:var(--text3)">Yield improvement</div>
+                </div>
+                <div style="flex:1;min-width:180px;display:flex;align-items:center;">
+                  <div style="background:rgba(0,230,118,0.1);border:1px solid rgba(0,230,118,0.2);border-radius:8px;padding:10px 14px;font-size:11px;color:var(--green);line-height:1.5;">
+                    <strong>💰 Estimated savings:</strong> £18,400 per batch (waste disposal + material cost) based on EPA Green Chemistry cost model.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div id="steps-tab" style="display:none;">
+              <div class="grid-2">
+                <div class="card">
+                  <div style="color:var(--red);font-size:13px;font-weight:600;margin-bottom:10px;font-family:'Syne',sans-serif;">⚗ Standard Route (7 Steps)</div>
+                  <div class="steps">
+                    <div class="step"><div class="step-dot red">1</div><div class="step-content"><div class="step-title">Friedel-Crafts Acylation</div><div class="step-detail">AlCl₃ catalyst in DCM — Class 2 solvent, high waste</div></div></div>
+                    <div class="step"><div class="step-dot red">2</div><div class="step-content"><div class="step-title">Reductive Amination</div><div class="step-detail">NaBH₄/MeOH — flammable, aqueous waste high</div></div></div>
+                    <div class="step"><div class="step-dot red">3</div><div class="step-content"><div class="step-title">Protection Step</div><div class="step-detail">Boc-anhydride in THF — unnecessary for green route</div></div></div>
+                    <div class="step"><div class="step-dot red">4</div><div class="step-content"><div class="step-title">Column Chromatography</div><div class="step-detail">Hexane/EtOAc 4:1 — large solvent volume</div></div></div>
+                    <div class="step"><div class="step-dot red">5</div><div class="step-content"><div class="step-title">Coupling Reaction</div><div class="step-detail">EDCI/DMAP in DMF — genotoxic impurity concern</div></div></div>
+                    <div class="step"><div class="step-dot red">6</div><div class="step-content"><div class="step-title">Deprotection</div><div class="step-detail">TFA in DCM — halogenated waste stream</div></div></div>
+                    <div class="step"><div class="step-dot red">7</div><div class="step-content"><div class="step-title">Final Purification</div><div class="step-detail">Crystallisation from DCM/hexane</div></div></div>
+                  </div>
+                </div>
+                <div class="card" style="border-color:rgba(0,230,118,0.2);">
+                  <div style="color:var(--green);font-size:13px;font-weight:600;margin-bottom:10px;font-family:'Syne',sans-serif;">🌿 AI Green Route (4 Steps)</div>
+                  <div class="steps">
+                    <div class="step"><div class="step-dot green">1</div><div class="step-content"><div class="step-title">Enzymatic Acylation</div><div class="step-detail">Immobilised lipase in EtOAc — biocatalyst, recyclable</div></div></div>
+                    <div class="step"><div class="step-dot green">2</div><div class="step-content"><div class="step-title">Flow Reductive Amination</div><div class="step-detail">Continuous flow, H-Cube Pd/C — no solvent waste</div></div></div>
+                    <div class="step"><div class="step-dot green">3</div><div class="step-content"><div class="step-title">Direct Amide Coupling</div><div class="step-detail">T3P® reagent in iPrOAc — Class 3 solvent, low PMI</div></div></div>
+                    <div class="step"><div class="step-dot green">4</div><div class="step-content"><div class="step-title">Aqueous Workup + Crystallisation</div><div class="step-detail">Water/EtOH system — no halogenated solvents</div></div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div id="solvents-tab" style="display:none;">
+              <div class="card">
+                <div class="section-title" style="font-size:13px;margin-bottom:14px;">Solvent Substitution Analysis (GSK Guide + EPA SCIL)</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                  <div>
+                    <div style="font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace;margin-bottom:8px;">FLAGGED SOLVENTS → RECOMMENDED SUBSTITUTES</div>
+                    <div style="display:flex;flex-direction:column;gap:6px;">
+                      <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:rgba(255,82,82,0.05);border:1px solid rgba(255,82,82,0.15);border-radius:7px;font-size:12px;">
+                        <span style="color:var(--red)">✗ DCM</span><span style="color:var(--text3)">→</span><span style="color:var(--green)">✓ Ethyl Acetate (EtOAc)</span>
+                      </div>
+                      <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:rgba(255,82,82,0.05);border:1px solid rgba(255,82,82,0.15);border-radius:7px;font-size:12px;">
+                        <span style="color:var(--red)">✗ DMF</span><span style="color:var(--text3)">→</span><span style="color:var(--green)">✓ 2-MeTHF (Class 3)</span>
+                      </div>
+                      <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:rgba(255,171,64,0.05);border:1px solid rgba(255,171,64,0.15);border-radius:7px;font-size:12px;">
+                        <span style="color:var(--amber)">⚠ THF</span><span style="color:var(--text3)">→</span><span style="color:var(--green)">✓ Cyclopentyl methyl ether</span>
+                      </div>
+                      <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:rgba(255,82,82,0.05);border:1px solid rgba(255,82,82,0.15);border-radius:7px;font-size:12px;">
+                        <span style="color:var(--red)">✗ Hexane</span><span style="color:var(--text3)">→</span><span style="color:var(--green)">✓ Heptane (lower toxicity)</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <div style="font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace;margin-bottom:8px;">ICH Q3C SOLVENT CLASS MIGRATION</div>
+                    <div style="padding:12px;background:var(--bg3);border-radius:8px;border:1px solid var(--border);">
+                      <div style="margin-bottom:8px;font-size:12px;color:var(--text2)">Before optimization:</div>
+                      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;">
+                        <span class="chip chip-red">Class 1: 0%</span>
+                        <span class="chip chip-amber">Class 2: 68%</span>
+                        <span class="chip chip-teal">Class 3: 32%</span>
+                      </div>
+                      <div style="margin-bottom:8px;font-size:12px;color:var(--text2)">After AI optimization:</div>
+                      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                        <span class="chip chip-red">Class 1: 0%</span>
+                        <span class="chip chip-amber">Class 2: 8%</span>
+                        <span class="chip chip-green">Class 3: 92%</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT PANEL -->
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div class="card">
+            <div class="card-label">Quick Analysis Presets</div>
+            <div style="display:flex;flex-direction:column;gap:6px;margin-top:8px;">
+              <div onclick="loadPreset('Ibuprofen synthesis via Boots process')" style="cursor:pointer;padding:8px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:7px;font-size:12px;color:var(--text2);transition:all 0.2s;" onmouseover="this.style.borderColor='var(--green)'" onmouseout="this.style.borderColor='var(--border)'">🔵 Ibuprofen (Boots process)</div>
+              <div onclick="loadPreset('Atorvastatin API synthesis')" style="cursor:pointer;padding:8px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:7px;font-size:12px;color:var(--text2);transition:all 0.2s;" onmouseover="this.style.borderColor='var(--green)'" onmouseout="this.style.borderColor='var(--border)'">🔵 Atorvastatin API</div>
+              <div onclick="loadPreset('Amide coupling with EDCI-DCM')" style="cursor:pointer;padding:8px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:7px;font-size:12px;color:var(--text2);transition:all 0.2s;" onmouseover="this.style.borderColor='var(--green)'" onmouseout="this.style.borderColor='var(--border)'">🔵 Amide coupling (EDCI-DCM)</div>
+              <div onclick="loadPreset('Losartan coupling with DMF')" style="cursor:pointer;padding:8px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:7px;font-size:12px;color:var(--text2);transition:all 0.2s;" onmouseover="this.style.borderColor='var(--green)'" onmouseout="this.style.borderColor='var(--border)'">🔵 Losartan synthesis</div>
+              <div onclick="loadPreset('Metformin via flow chemistry')" style="cursor:pointer;padding:8px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:7px;font-size:12px;color:var(--text2);transition:all 0.2s;" onmouseover="this.style.borderColor='var(--green)'" onmouseout="this.style.borderColor='var(--border)'">🔵 Metformin flow route</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-label">AI Model Status</div>
+            <div style="margin-top:10px;display:flex;flex-direction:column;gap:7px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;">
+                <span style="color:var(--text3)">Neural Net v3.2</span>
+                <span class="chip chip-green">Active</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;">
+                <span style="color:var(--text3)">EPA SCIL Database</span>
+                <span class="chip chip-green">Synced</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;">
+                <span style="color:var(--text3)">REACH Registry</span>
+                <span class="chip chip-green">Updated today</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;">
+                <span style="color:var(--text3)">Reactions DB</span>
+                <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3)">512,840 rxns</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="border-color:rgba(0,230,118,0.15);background:rgba(0,230,118,0.03);">
+            <div class="card-label">PMI Calculator</div>
+            <div style="font-size:11px;color:var(--text3);margin:8px 0 4px;">Process Mass Intensity</div>
+            <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:28px;color:var(--green)">4.8</div>
+            <div style="font-size:10px;color:var(--text3);margin-bottom:6px;">kg material / kg product</div>
+            <div style="font-size:10px;color:var(--green)">✓ Below ICH Q3C recommended ≤10</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ══════════ SCREEN 3: COMPLIANCE TRACKER ══════════ -->
+    <div class="screen" id="screen-compliance">
+      <div class="grid-2">
+        <div>
+          <div class="section-header">
+            <div class="section-title">REACH & EPA Compliance Status</div>
+            <span class="chip chip-teal">Auto-monitored</span>
+          </div>
+
+          <div class="compliance-item">
+            <div class="compliance-icon ci-pass">✅</div>
+            <div class="compliance-body">
+              <div class="compliance-title">EU REACH SVHC Candidate List</div>
+              <div class="compliance-desc">All 247 active substances checked against ECHA's latest SVHC list (Jan 2025). 0 substances of very high concern identified in current portfolio.</div>
+            </div>
+            <div class="compliance-status cs-pass">PASS</div>
+          </div>
+
+          <div class="compliance-item">
+            <div class="compliance-icon ci-pass">✅</div>
+            <div class="compliance-body">
+              <div class="compliance-title">EPA Safer Chemical Ingredients List (SCIL)</div>
+              <div class="compliance-desc">18 of 24 synthesis routes fully aligned with EPA SCIL verified ingredients. 6 routes using AI-recommended substitutions are pending confirmatory lab validation.</div>
+            </div>
+            <div class="compliance-status cs-pass">PASS</div>
+          </div>
+
+          <div class="compliance-item">
+            <div class="compliance-icon ci-warn">⚠️</div>
+            <div class="compliance-body">
+              <div class="compliance-title">OECD Chemical Safety Guidelines (TG 301B)</div>
+              <div class="compliance-desc">2 solvents (DMF, NMP) in routes FIN-03 and SYN-06 require updated biodegradability data. Reassessment due Q2 2025. AI substitute identified: 2-MeTHF.</div>
+            </div>
+            <div class="compliance-status cs-warn">REVIEW</div>
+          </div>
+
+          <div class="compliance-item">
+            <div class="compliance-icon ci-pass">✅</div>
+            <div class="compliance-body">
+              <div class="compliance-title">ICH Q3C Solvent Residue Limits</div>
+              <div class="compliance-desc">Post-AI-optimisation: 92% of routes now use only Class 3 solvents. Halogenated solvent (Class 2) use reduced to 8% of total solvent volume, well within ICH limits.</div>
+            </div>
+            <div class="compliance-status cs-pass">PASS</div>
+          </div>
+
+          <div class="compliance-item">
+            <div class="compliance-icon ci-fail">❌</div>
+            <div class="compliance-body">
+              <div class="compliance-title">GHS Classification — Routes API-06 & FIN-03</div>
+              <div class="compliance-desc">These 2 routes contain intermediates classified GHS Category 1 (acute toxicity). Immediate AI optimisation recommended. Alternative pathways identified in the Process Optimizer.</div>
+            </div>
+            <div class="compliance-status cs-fail">ACTION REQ.</div>
+          </div>
+
+          <div class="compliance-item">
+            <div class="compliance-icon ci-pass">✅</div>
+            <div class="compliance-body">
+              <div class="compliance-title">ISO 14064 Carbon Accounting</div>
+              <div class="compliance-desc">Q1 2025 Scope 1 & 2 emissions verified against ISO 14064-1. Scope 3 (upstream chemical supply) data now integrated via AI supply-chain module.</div>
+            </div>
+            <div class="compliance-status cs-pass">VERIFIED</div>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:14px;">
+
+          <!-- SDG SECTION -->
+          <div class="card">
+            <div class="section-title" style="font-size:13px;margin-bottom:12px;">UN SDG Alignment Scores</div>
+            <div>
+              <div class="sdg-badge sdg-9">
+                <span style="font-size:18px;">⚙️</span>
+                <div><div style="font-weight:700">SDG 9</div><div style="font-size:10px;opacity:0.8">Industry Innovation</div></div>
+                <div style="margin-left:auto;font-family:'Syne',sans-serif;font-weight:800;font-size:18px;">78%</div>
+              </div>
+              <div class="prog-bar" style="margin-bottom:12px;"><div class="prog-fill" style="width:78%;background:#fd8c40"></div></div>
+
+              <div class="sdg-badge sdg-12" style="width:100%;display:flex;">
+                <span style="font-size:18px;">♻️</span>
+                <div><div style="font-weight:700">SDG 12</div><div style="font-size:10px;opacity:0.8">Responsible Production</div></div>
+                <div style="margin-left:auto;font-family:'Syne',sans-serif;font-weight:800;font-size:18px;">84%</div>
+              </div>
+              <div class="prog-bar" style="margin-bottom:12px;"><div class="prog-fill" style="width:84%;background:#d4a843"></div></div>
+
+              <div class="sdg-badge sdg-13" style="width:100%;display:flex;">
+                <span style="font-size:18px;">🌡️</span>
+                <div><div style="font-weight:700">SDG 13</div><div style="font-size:10px;opacity:0.8">Climate Action</div></div>
+                <div style="margin-left:auto;font-family:'Syne',sans-serif;font-weight:800;font-size:18px;">71%</div>
+              </div>
+              <div class="prog-bar" style="margin-bottom:12px;"><div class="prog-fill" style="width:71%;background:#82b1ff"></div></div>
+
+              <div class="sdg-badge sdg-3" style="width:100%;display:flex;">
+                <span style="font-size:18px;">💊</span>
+                <div><div style="font-weight:700">SDG 3</div><div style="font-size:10px;opacity:0.8">Good Health</div></div>
+                <div style="margin-left:auto;font-family:'Syne',sans-serif;font-weight:800;font-size:18px;">91%</div>
+              </div>
+              <div class="prog-bar"><div class="prog-fill" style="width:91%;background:#81c784"></div></div>
+            </div>
+          </div>
+
+          <!-- EXPORT CARD -->
+          <div class="export-card">
+            <div>
+              <div class="export-title">📋 Annual Sustainability Report</div>
+              <div class="export-sub">Auto-generated · OECD + UN SDG formatted · Q1 2025</div>
+            </div>
+            <button class="btn btn-primary" onclick="alert('Downloading ESG report...\n\nIn production, this would generate a full PDF ESG report aligned to GRI Standards, UN SDG framework, and OECD chemical safety indicators.')">Export PDF</button>
+          </div>
+
+          <div class="export-card">
+            <div>
+              <div class="export-title">📊 Regulatory Audit Pack</div>
+              <div class="export-sub">REACH · EPA · ICH Q3C · GHS formatted</div>
+            </div>
+            <button class="btn btn-ghost" onclick="alert('Preparing audit documentation...\n\nThis would compile all compliance records into a structured audit-ready pack for regulatory submissions.')">Prepare Pack</button>
+          </div>
+
+          <!-- AUDIT TRAIL -->
+          <div class="card">
+            <div class="card-label">Recent Compliance Events</div>
+            <div style="margin-top:10px;display:flex;flex-direction:column;gap:6px;">
+              <div class="alert-item alert-new">
+                <span style="font-size:14px;">🔴</span>
+                <div>
+                  <div style="font-size:12px;color:var(--text);font-weight:500">API-06 flagged — GHS Cat.1</div>
+                  <div style="font-size:10px;color:var(--text3)">Today, 09:14 · AI optimisation available</div>
+                </div>
+              </div>
+              <div class="alert-item alert-info">
+                <span style="font-size:14px;">🔵</span>
+                <div>
+                  <div style="font-size:12px;color:var(--text);font-weight:500">REACH SVHC list updated</div>
+                  <div style="font-size:10px;color:var(--text3)">Yesterday · 3 new entries, 0 impact on portfolio</div>
+                </div>
+              </div>
+              <div class="alert-item alert-done">
+                <span style="font-size:14px;">✅</span>
+                <div>
+                  <div style="font-size:12px;color:var(--text);font-weight:500">SYN-002 re-certified green</div>
+                  <div style="font-size:10px;color:var(--text3)">Jan 8 · DCM → EtOAc substitution verified</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ══════════ SCREEN 4: REPORTS ══════════ -->
+    <div class="screen" id="screen-reports">
+      <div class="grid-3" style="margin-bottom:20px;">
+        <div class="card" style="background:linear-gradient(135deg,rgba(0,230,118,0.06),transparent)">
+          <div class="card-label">Total Waste Reduction</div>
+          <div class="card-value" style="color:var(--green)">38%</div>
+          <div class="card-sub">vs. pre-AI baseline (FY2022)</div>
+        </div>
+        <div class="card">
+          <div class="card-label">Cost Savings (FY2024)</div>
+          <div class="card-value" style="color:var(--amber)">£2.4M</div>
+          <div class="card-sub">waste disposal + green tax credits</div>
+        </div>
+        <div class="card">
+          <div class="card-label">ESG Rating (MSCI)</div>
+          <div class="card-value" style="color:var(--teal)">AA</div>
+          <div class="card-sub"><span class="delta-up">↑ from A</span> after AI deployment</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="section-title" style="font-size:13px;margin-bottom:14px;">Phased AI Adoption Progress</div>
+          <div style="display:flex;flex-direction:column;gap:14px;">
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px;">
+                <span style="color:var(--text)">Phase 1: Data Digitisation</span>
+                <span style="color:var(--green);font-family:'JetBrains Mono',monospace">100% ✓</span>
+              </div>
+              <div class="prog-bar" style="height:8px;"><div class="prog-fill" style="width:100%;background:var(--green);height:100%;border-radius:4px;"></div></div>
+              <div style="font-size:10px;color:var(--text3);margin-top:4px;">Completed Aug 2023 — 100% lab data migrated to cloud ELN</div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px;">
+                <span style="color:var(--text)">Phase 2: Pilot Simulation</span>
+                <span style="color:var(--teal);font-family:'JetBrains Mono',monospace">78% →</span>
+              </div>
+              <div class="prog-bar" style="height:8px;"><div class="prog-fill" style="width:78%;background:var(--teal);height:100%;border-radius:4px;"></div></div>
+              <div style="font-size:10px;color:var(--text3);margin-top:4px;">In progress — 18 of 24 routes piloted; 6 pending Q2 2025</div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px;">
+                <span style="color:var(--text)">Phase 3: Full-Scale Automation</span>
+                <span style="color:var(--amber);font-family:'JetBrains Mono',monospace">22% ○</span>
+              </div>
+              <div class="prog-bar" style="height:8px;"><div class="prog-fill" style="width:22%;background:var(--amber);height:100%;border-radius:4px;"></div></div>
+              <div style="font-size:10px;color:var(--text3);margin-top:4px;">Commenced — 2 continuous flow lines live; 8 planned by FY2026</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-title" style="font-size:13px;margin-bottom:14px;">Financial ROI Analysis</div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:11px 14px;display:flex;justify-content:space-between;align-items:center;">
+              <div style="font-size:12px;color:var(--text2)">Waste Disposal Cost Savings</div>
+              <div style="font-family:'Syne',sans-serif;font-weight:700;color:var(--green)">£1,240,000</div>
+            </div>
+            <div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:11px 14px;display:flex;justify-content:space-between;align-items:center;">
+              <div style="font-size:12px;color:var(--text2)">Green Tax Credits Received</div>
+              <div style="font-family:'Syne',sans-serif;font-weight:700;color:var(--green)">£680,000</div>
+            </div>
+            <div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:11px 14px;display:flex;justify-content:space-between;align-items:center;">
+              <div style="font-size:12px;color:var(--text2)">Reduced Raw Material Costs</div>
+              <div style="font-family:'Syne',sans-serif;font-weight:700;color:var(--green)">£520,000</div>
+            </div>
+            <div style="background:var(--bg3);border:1px solid rgba(255,82,82,0.2);border-radius:8px;padding:11px 14px;display:flex;justify-content:space-between;align-items:center;">
+              <div style="font-size:12px;color:var(--text2)">GreenChem-AI Platform Cost</div>
+              <div style="font-family:'Syne',sans-serif;font-weight:700;color:var(--red)">– £50,000</div>
+            </div>
+            <div style="background:rgba(0,230,118,0.06);border:1px solid rgba(0,230,118,0.2);border-radius:8px;padding:11px 14px;display:flex;justify-content:space-between;align-items:center;">
+              <div style="font-size:12px;font-weight:600;color:var(--text)">Net ROI (FY2024)</div>
+              <div style="font-family:'Syne',sans-serif;font-weight:800;color:var(--green);font-size:18px;">£2,390,000</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ══════════ SCREEN 5: ALERTS ══════════ -->
+    <div class="screen" id="screen-alerts">
+      <div class="grid-2">
+        <div>
+          <div class="section-header">
+            <div class="section-title">Regulatory Change Alerts</div>
+            <span class="chip chip-red">3 New</span>
+          </div>
+
+          <div class="compliance-item" style="border-color:rgba(255,82,82,0.25)">
+            <div class="compliance-icon ci-fail">🚨</div>
+            <div class="compliance-body">
+              <div class="compliance-title">NEW: Dichloromethane (DCM) — EU Restriction Update</div>
+              <div class="compliance-desc">ECHA has announced further restrictions on DCM in pharmaceutical manufacturing under REACH Annex XVII, effective Q3 2025. Routes API-06, FIN-03 directly impacted. AI alternatives identified and ready in Process Optimizer.</div>
+              <div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap;">
+                <span class="chip chip-red">Critical</span>
+                <span class="chip chip-amber">Today</span>
+                <span class="chip chip-teal">2 routes affected</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="compliance-item" style="border-color:rgba(255,82,82,0.2)">
+            <div class="compliance-icon ci-fail">🚨</div>
+            <div class="compliance-body">
+              <div class="compliance-title">N-Methylpyrrolidone (NMP) — SVHC Listing Confirmed</div>
+              <div class="compliance-desc">NMP has been confirmed for REACH SVHC candidate list as reproductive toxicant. Immediate substitution with 2-MeTHF or Cyrene recommended for affected routes. Transition deadline: June 2025.</div>
+              <div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap;">
+                <span class="chip chip-red">High Priority</span>
+                <span class="chip chip-amber">Yesterday</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="compliance-item" style="border-color:rgba(255,82,82,0.15)">
+            <div class="compliance-icon ci-warn">⚠️</div>
+            <div class="compliance-body">
+              <div class="compliance-title">EPA SCIL Update — 12 New Safer Alternatives Added</div>
+              <div class="compliance-desc">January 2025 SCIL update includes 12 new verified safer ingredient designations relevant to pharmaceutical synthesis. Cross-referencing against portfolio now complete — 4 new substitution opportunities identified.</div>
+              <div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap;">
+                <span class="chip chip-amber">Medium</span>
+                <span class="chip chip-teal">Jan 10</span>
+                <span class="chip chip-green">Opportunities</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="compliance-item">
+            <div class="compliance-icon" style="background:rgba(0,188,212,0.1);font-size:16px;">📢</div>
+            <div class="compliance-body">
+              <div class="compliance-title">ICH M7 Guideline Revision — Nitrosamine Limits</div>
+              <div class="compliance-desc">Revised acceptable intakes (AI) for nitrosamine impurities published. All synthesis routes re-screened — no current routes exceed new limits. Proactive monitoring active for 3 routes.</div>
+              <div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap;">
+                <span class="chip chip-teal">Informational</span>
+                <span style="font-size:10px;color:var(--text3)">Jan 5</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="compliance-item">
+            <div class="compliance-icon ci-pass" style="font-size:16px;">✅</div>
+            <div class="compliance-body">
+              <div class="compliance-title">OECD 303A Biodegradability — SYN-002 Cleared</div>
+              <div class="compliance-desc">Updated biodegradability assessment confirms SYN-002 post-optimisation route meets OECD 303A Ready Biodegradability criteria. Compliance record updated automatically.</div>
+              <div style="margin-top:6px;"><span class="chip chip-green">Resolved</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div class="card">
+            <div class="card-label">Alert Statistics — Last 90 Days</div>
+            <div style="display:flex;gap:12px;margin-top:10px;flex-wrap:wrap;">
+              <div style="text-align:center;flex:1;">
+                <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:24px;color:var(--red)">3</div>
+                <div style="font-size:10px;color:var(--text3)">Critical</div>
+              </div>
+              <div style="text-align:center;flex:1;">
+                <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:24px;color:var(--amber)">7</div>
+                <div style="font-size:10px;color:var(--text3)">High Priority</div>
+              </div>
+              <div style="text-align:center;flex:1;">
+                <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:24px;color:var(--teal)">14</div>
+                <div style="font-size:10px;color:var(--text3)">Informational</div>
+              </div>
+              <div style="text-align:center;flex:1;">
+                <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:24px;color:var(--green)">21</div>
+                <div style="font-size:10px;color:var(--text3)">Resolved</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-label">Monitored Databases</div>
+            <div style="display:flex;flex-direction:column;gap:6px;margin-top:10px;">
+              <div style="display:flex;justify-content:space-between;font-size:11px;padding:6px 10px;background:var(--bg3);border-radius:6px;border:1px solid var(--border)">
+                <span style="color:var(--text2)">ECHA SVHC Candidate List</span>
+                <span class="chip chip-green">Live</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:11px;padding:6px 10px;background:var(--bg3);border-radius:6px;border:1px solid var(--border)">
+                <span style="color:var(--text2)">EPA Safer Chemicals</span>
+                <span class="chip chip-green">Live</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:11px;padding:6px 10px;background:var(--bg3);border-radius:6px;border:1px solid var(--border)">
+                <span style="color:var(--text2)">OECD Chemical Safety</span>
+                <span class="chip chip-teal">Daily sync</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:11px;padding:6px 10px;background:var(--bg3);border-radius:6px;border:1px solid var(--border)">
+                <span style="color:var(--text2)">ICH Guidelines</span>
+                <span class="chip chip-teal">Weekly sync</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:11px;padding:6px 10px;background:var(--bg3);border-radius:6px;border:1px solid var(--border)">
+                <span style="color:var(--text2)">FDA Drug Master Files</span>
+                <span class="chip chip-amber">Weekly sync</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="border-color:rgba(0,230,118,0.12);">
+            <div class="card-label">AI Repurposing Engine — Last Run</div>
+            <div style="margin-top:10px;font-size:12px;color:var(--text3);line-height:1.7;">
+              Scanned <strong style="color:var(--text)">512,840</strong> reactions against current REACH/EPA data.<br>
+              Found <strong style="color:var(--green)">14 new substitution opportunities</strong> across portfolio.<br>
+              Estimated savings if adopted: <strong style="color:var(--amber)">£340,000/year</strong>.
+            </div>
+            <button class="btn btn-primary" style="margin-top:12px;width:100%;justify-content:center;" onclick="alert('Running AI Repurposing Engine...\n\nThis would initiate a full portfolio rescan against latest EPA SCIL, REACH SVHC, and internal reaction database to identify new green substitution opportunities.')">🔄 Re-scan Now</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ══════════ SCREEN 6: SDG ══════════ -->
+    <div class="screen" id="screen-sdg">
+      <div class="grid-2" style="margin-bottom:20px;">
+        <div class="card" style="background:linear-gradient(135deg,rgba(253,106,2,0.07),transparent);border-color:rgba(253,106,2,0.2);">
+          <div style="display:flex;gap:16px;align-items:flex-start;">
+            <div style="font-size:36px;">⚙️</div>
+            <div style="flex:1;">
+              <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:20px;color:#fd8c40;margin-bottom:4px;">SDG 9 — Industry, Innovation & Infrastructure</div>
+              <div style="font-size:12px;color:var(--text3);line-height:1.6;margin-bottom:12px;">AI-driven process innovation directly contributes to SDG 9's target of upgrading industries to make them sustainable by 2030.</div>
+              <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px;">
+                <div style="flex:1;"><div class="prog-bar" style="height:8px;"><div class="prog-fill" style="width:78%;background:#fd8c40;height:100%;border-radius:4px;"></div></div></div>
+                <span style="font-family:'Syne',sans-serif;font-weight:800;color:#fd8c40;">78%</span>
+              </div>
+              <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;">
+                <div style="font-size:11px;color:var(--text3);padding:4px 8px;background:var(--bg3);border-radius:5px;border:1px solid var(--border);">9.4 — Sustainable infrastructure ✓</div>
+                <div style="font-size:11px;color:var(--text3);padding:4px 8px;background:var(--bg3);border-radius:5px;border:1px solid var(--border);">9.b — Industrial diversification ✓</div>
+                <div style="font-size:11px;color:var(--text3);padding:4px 8px;background:rgba(255,171,64,0.05);border-radius:5px;border:1px solid rgba(255,171,64,0.2);">9.5 — R&D investment ⚠</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="background:linear-gradient(135deg,rgba(191,129,45,0.07),transparent);border-color:rgba(191,129,45,0.2);">
+          <div style="display:flex;gap:16px;align-items:flex-start;">
+            <div style="font-size:36px;">♻️</div>
+            <div style="flex:1;">
+              <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:20px;color:#d4a843;margin-bottom:4px;">SDG 12 — Responsible Consumption & Production</div>
+              <div style="font-size:12px;color:var(--text3);line-height:1.6;margin-bottom:12px;">Green Chemistry AI directly operationalises SDG 12 by minimising waste, hazardous materials, and resource consumption per unit of API produced.</div>
+              <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px;">
+                <div style="flex:1;"><div class="prog-bar" style="height:8px;"><div class="prog-fill" style="width:84%;background:#d4a843;height:100%;border-radius:4px;"></div></div></div>
+                <span style="font-family:'Syne',sans-serif;font-weight:800;color:#d4a843;">84%</span>
+              </div>
+              <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;">
+                <div style="font-size:11px;color:var(--text3);padding:4px 8px;background:var(--bg3);border-radius:5px;border:1px solid var(--border);">12.4 — Chemical management ✓</div>
+                <div style="font-size:11px;color:var(--text3);padding:4px 8px;background:var(--bg3);border-radius:5px;border:1px solid var(--border);">12.5 — Waste reduction ✓</div>
+                <div style="font-size:11px;color:var(--text3);padding:4px 8px;background:var(--bg3);border-radius:5px;border:1px solid var(--border);">12.6 — Sustainability reporting ✓</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-title" style="font-size:13px;margin-bottom:14px;">12 Principles of Green Chemistry — AI Compliance Mapping</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
+          <div style="padding:10px;background:var(--bg3);border-radius:8px;border:1px solid rgba(0,230,118,0.15);font-size:11px;text-align:center;"><div style="font-size:18px;margin-bottom:4px;">🚫</div><div style="color:var(--green);font-weight:600;font-size:10px;">P1: Waste Prevention</div><div style="color:var(--text3);margin-top:2px;">92% score</div></div>
+          <div style="padding:10px;background:var(--bg3);border-radius:8px;border:1px solid rgba(0,230,118,0.15);font-size:11px;text-align:center;"><div style="font-size:18px;margin-bottom:4px;">⚡</div><div style="color:var(--green);font-weight:600;font-size:10px;">P2: Atom Economy</div><div style="color:var(--text3);margin-top:2px;">87% score</div></div>
+          <div style="padding:10px;background:var(--bg3);border-radius:8px;border:1px solid rgba(0,230,118,0.15);font-size:11px;text-align:center;"><div style="font-size:18px;margin-bottom:4px;">🧪</div><div style="color:var(--teal);font-weight:600;font-size:10px;">P3: Less Hazardous</div><div style="color:var(--text3);margin-top:2px;">81% score</div></div>
+          <div style="padding:10px;background:var(--bg3);border-radius:8px;border:1px solid rgba(0,230,118,0.15);font-size:11px;text-align:center;"><div style="font-size:18px;margin-bottom:4px;">🌿</div><div style="color:var(--teal);font-weight:600;font-size:10px;">P4: Safer Design</div><div style="color:var(--text3);margin-top:2px;">79% score</div></div>
+          <div style="padding:10px;background:var(--bg3);border-radius:8px;border:1px solid rgba(0,230,118,0.15);font-size:11px;text-align:center;"><div style="font-size:18px;margin-bottom:4px;">🫧</div><div style="color:var(--green);font-weight:600;font-size:10px;">P5: Safer Solvents</div><div style="color:var(--text3);margin-top:2px;">91% score</div></div>
+          <div style="padding:10px;background:var(--bg3);border-radius:8px;border:1px solid rgba(0,230,118,0.15);font-size:11px;text-align:center;"><div style="font-size:18px;margin-bottom:4px;">💡</div><div style="color:var(--teal);font-weight:600;font-size:10px;">P6: Energy Efficiency</div><div style="color:var(--text3);margin-top:2px;">75% score</div></div>
+          <div style="padding:10px;background:var(--bg3);border-radius:8px;border:1px solid rgba(0,230,118,0.15);font-size:11px;text-align:center;"><div style="font-size:18px;margin-bottom:4px;">🌾</div><div style="color:var(--amber);font-weight:600;font-size:10px;">P7: Renewables</div><div style="color:var(--text3);margin-top:2px;">63% score</div></div>
+          <div style="padding:10px;background:var(--bg3);border-radius:8px;border:1px solid rgba(0,230,118,0.15);font-size:11px;text-align:center;"><div style="font-size:18px;margin-bottom:4px;">🔗</div><div style="color:var(--amber);font-weight:600;font-size:10px;">P8: Avoid Derivatives</div><div style="color:var(--text3);margin-top:2px;">68% score</div></div>
+          <div style="padding:10px;background:var(--bg3);border-radius:8px;border:1px solid rgba(0,230,118,0.15);font-size:11px;text-align:center;"><div style="font-size:18px;margin-bottom:4px;">🔬</div><div style="color:var(--green);font-weight:600;font-size:10px;">P9: Catalysis</div><div style="color:var(--text3);margin-top:2px;">88% score</div></div>
+          <div style="padding:10px;background:var(--bg3);border-radius:8px;border:1px solid rgba(0,230,118,0.15);font-size:11px;text-align:center;"><div style="font-size:18px;margin-bottom:4px;">🧬</div><div style="color:var(--teal);font-weight:600;font-size:10px;">P10: Degradability</div><div style="color:var(--text3);margin-top:2px;">77% score</div></div>
+          <div style="padding:10px;background:var(--bg3);border-radius:8px;border:1px solid rgba(0,230,118,0.15);font-size:11px;text-align:center;"><div style="font-size:18px;margin-bottom:4px;">📡</div><div style="color:var(--teal);font-weight:600;font-size:10px;">P11: Real-time Monitoring</div><div style="color:var(--text3);margin-top:2px;">82% score</div></div>
+          <div style="padding:10px;background:var(--bg3);border-radius:8px;border:1px solid rgba(0,230,118,0.15);font-size:11px;text-align:center;"><div style="font-size:18px;margin-bottom:4px;">🛡️</div><div style="color:var(--green);font-weight:600;font-size:10px;">P12: Safer Chemistry</div><div style="color:var(--text3);margin-top:2px;">85% score</div></div>
+        </div>
+        <div style="margin-top:12px;padding:10px 14px;background:rgba(0,230,118,0.04);border:1px solid rgba(0,230,118,0.12);border-radius:8px;font-size:11px;color:var(--text3);line-height:1.6;">
+          Overall Green Chemistry Compliance: <strong style="color:var(--green)">80.7%</strong> (↑ 14.3% since AI deployment). Priority improvement areas: P7 Renewable Feedstocks (63%) and P8 Derivative Avoidance (68%) — roadmap items for Phase 3 deployment.
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- ─── EXPORT MODAL ─── -->
+<div class="modal-overlay" id="exportModal">
+  <div class="modal">
+    <div class="modal-title">📤 Export & Share</div>
+    <div class="modal-sub">Select the report type and format to generate your sustainability or compliance documentation.</div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px;">
+      <div onclick="alert('Generating ESG Annual Report PDF...')" style="cursor:pointer;padding:12px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;font-size:13px;color:var(--text2);transition:all 0.15s;" onmouseover="this.style.borderColor='var(--green)'" onmouseout="this.style.borderColor='var(--border)'">📊 ESG Annual Report (GRI Standards) — PDF</div>
+      <div onclick="alert('Generating UN SDG Contribution Report...')" style="cursor:pointer;padding:12px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;font-size:13px;color:var(--text2);transition:all 0.15s;" onmouseover="this.style.borderColor='var(--green)'" onmouseout="this.style.borderColor='var(--border)'">🌍 UN SDG Contribution Report — PDF</div>
+      <div onclick="alert('Preparing REACH Compliance Pack...')" style="cursor:pointer;padding:12px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;font-size:13px;color:var(--text2);transition:all 0.15s;" onmouseover="this.style.borderColor='var(--green)'" onmouseout="this.style.borderColor='var(--border)'">🇪🇺 REACH Compliance Pack — Excel + PDF</div>
+      <div onclick="alert('Downloading portfolio data as CSV...')" style="cursor:pointer;padding:12px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;font-size:13px;color:var(--text2);transition:all 0.15s;" onmouseover="this.style.borderColor='var(--green)'" onmouseout="this.style.borderColor='var(--border)'">📥 Portfolio Data Export — CSV</div>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;">
+      <button class="btn btn-ghost" onclick="document.getElementById('exportModal').classList.remove('open')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const pages = {
+    dashboard:  { title: 'Sustainability Dashboard',   crumb: 'Q1 2025 · Live' },
+    optimizer:  { title: 'Process Optimizer',          crumb: 'AI Route Analysis' },
+    compliance: { title: 'Regulatory Compliance Tracker', crumb: 'REACH · EPA · OECD · SDG' },
+    reports:    { title: 'ESG Reports & ROI',          crumb: 'FY2024 · Annual' },
+    alerts:     { title: 'Chemical Alerts',            crumb: 'Live Monitoring' },
+    sdg:        { title: 'SDG Alignment',              crumb: 'UN SDG 9 · 12 · 13 · 3' }
+  };
+
+  function navigate(page) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+    document.getElementById('screen-' + page).classList.add('active');
+    document.getElementById('pageTitle').textContent = pages[page].title;
+    document.getElementById('pageCrumb').textContent = pages[page].crumb;
+
+    event.currentTarget.classList.add('active');
+  }
+
+  function switchTab(el, tabId) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('route-tab').style.display = 'none';
+    document.getElementById('steps-tab').style.display = 'none';
+    document.getElementById('solvents-tab').style.display = 'none';
+    document.getElementById(tabId).style.display = 'block';
+  }
+
+  function loadPreset(val) {
+    document.getElementById('chemInput').value = val;
+    runAnalysis();
+  }
+
+  const analyzeMessages = [
+    'Initialising AI Substitution Engine...',
+    'Cross-referencing EPA SCIL database...',
+    'Querying 512,840 reaction records...',
+    'Running Neural Network v3.2...',
+    'Computing E-factor and CO₂e...',
+    'Generating green synthesis route...',
+    'Analysis complete ✓'
+  ];
+
+  function runAnalysis() {
+    const input = document.getElementById('chemInput').value.trim();
+    if (!input) {
+      document.getElementById('chemInput').focus();
+      return;
+    }
+    const aDiv = document.getElementById('analyzing');
+    const aText = document.getElementById('analyzingText');
+    aDiv.classList.add('show');
+
+    let i = 0;
+    const interval = setInterval(() => {
+      aText.textContent = analyzeMessages[i++];
+      if (i >= analyzeMessages.length) {
+        clearInterval(interval);
+        setTimeout(() => { aDiv.classList.remove('show'); }, 400);
+      }
+    }, 380);
+  }
+
+  function openModal() {
+    document.getElementById('exportModal').classList.add('open');
+  }
+  document.getElementById('exportModal').addEventListener('click', function(e) {
+    if (e.target === this) this.classList.remove('open');
+  });
+
+  // Ensure nav clicks with navigate() pass correct context
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('click', function() {
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>
